@@ -2,7 +2,6 @@ import random
 from player import Player
 
 
-
 def character_stats():
     character = {}
     character["Hp"] = 12
