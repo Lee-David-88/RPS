@@ -1,6 +1,5 @@
 import random
 
-
 class Player:
     rockSkills = []
     paperSkills = []
@@ -11,7 +10,6 @@ class Player:
     max_attack = 0
     current_attack = 0
     skillToFuncMap = {}
-
 
     def __init__(self, num_skills=0, num_points=0, npc=False, skill_list=None):
         if skill_list is None:
@@ -64,7 +62,7 @@ class Player:
                     self.skillToFuncMap[skill] = self.lambda_generator(func)
 
     def lambda_generator(self, func):
-        return lambda: getattr(self, func)()
+        return lambda other_player: getattr(self, func)(other_player)
 
     def allocate_starting_points(self, num_points):
         if self.npc:
@@ -94,7 +92,7 @@ class Player:
             pass
 
     def get_move(self):
-        choices = ["rock","paper","scissors"]
+        choices = ["rock", "paper", "scissors"]
         if self.npc:
             return choices[random.randint(0, 2)]
         while True:
@@ -103,23 +101,23 @@ class Player:
                 return choice.lower()
             print("invalid choice")
 
-    def regen_logic(self):
+    def regen_logic(self, other_player):
         print("regen")
 
-    def leech_logic(self):
+    def leech_logic(self, other_player):
         print("leech")
 
-    def thorns_logic(self):
+    def thorns_logic(self, other_player):
         print("thorns")
 
-    def dodge_logic(self):
+    def dodge_logic(self, other_player):
         print("dodge")
 
-    def block_logic(self):
+    def block_logic(self, other_player):
         print("block")
 
-    def risk_logic(self):
+    def risk_logic(self, other_player):
         print("risk")
 
-    def heal_logic(self):
+    def heal_logic(self, other_player):
         print("heal")

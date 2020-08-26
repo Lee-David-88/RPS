@@ -83,9 +83,7 @@ def allocate_stats(character):
         #         elif npc_choice == "Paper":
         #             foe["Hp"] -= player["Attack"]
         #             print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
-def determine_winner(player1_choice, player2_choice):
-    choices = ["rock", "paper", "scissors"]
-    if []
+
 def combat(player, other_player):
     player.start_round()
     other_player.start_round()
