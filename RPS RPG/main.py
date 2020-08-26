@@ -1,7 +1,6 @@
 import random
 from player import Player
 
-start_Game = input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
 
 
 def character_stats():
@@ -88,8 +87,10 @@ def combat(player, foe):
 
 
 def main():
-    player1 = Player(6, False)
-    player2 = Player(6, True)
+    input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
+    skills = ["Skill1", "Skill2", "Skill3", "Skill4", "Skill5", "Skill6", "Skill7"]
+    npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills)
+    player = Player(num_skills=6, num_points=3, skill_list=skills)
 
     # player = character_stats()
     # allocate_stats(player)
