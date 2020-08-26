@@ -10,6 +10,14 @@ class Player:
     attack = 0
 
     def __init__(self, num_skills=0, num_points=0, npc=False, skill_list=[]):
+        self.skillToFuncMap = {skill_list[0]: lambda: self.skill1(),
+                               skill_list[1]: lambda: self.skill2(),
+                               skill_list[2]: lambda: self.skill3(),
+                               skill_list[3]: lambda: self.skill4(),
+                               skill_list[4]: lambda: self.skill5(),
+                               skill_list[5]: lambda: self.skill6()}
+
+        self.skillToFuncMap[skill_list[1]]()
         self.health = 12
         self.attack = 2
         self.allocate_starting_points(num_points, npc)
