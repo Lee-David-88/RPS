@@ -6,7 +6,9 @@ class Player:
     paperSkills = []
     scissorsSkills = []
 
-    health = 0
+    # should I add temp attack for one round only ?
+    max_health = 0
+    health = max_health
     attack = 0
 
     def __init__(self, num_skills=0, num_points=0, npc=False, skill_list=[]):
@@ -19,7 +21,7 @@ class Player:
                                skill_list[6]: lambda: self.skill7()}
 
         self.skillToFuncMap[skill_list[1]]()
-        self.health = 12.0
+        self.max_health = 12.0
         self.attack = 2.0
         self.allocate_starting_points(num_points, npc)
         self.pick_skills(num_skills, npc)
@@ -28,7 +30,7 @@ class Player:
         if result == "Win" or "Tie":
             self.health += 1
         elif result == "Lose":
-            self.health -= 1
+            self.max_health -= 1
 
     def skill2(self, result):
         if result == "Win":
@@ -53,16 +55,16 @@ class Player:
         if npc:
             for i in range(num_points):
                 if random.randint(0, 1) == 0:
-                    self.health += 2
+                    self.max_health += 2
                 else:
                     self.attack += 1
         else:
             while num_points > 0:
                 print("\"hp\" to add 2 health or \"attack\" to add 1 attack")
-                print(f"current health: {self.health}, current attack: {self.attack}")
+                print(f"current health: {self.max_health}, current attack: {self.attack}")
                 choice = input()
                 if choice.lower() == "hp":
-                    self.health += 2
+                    self.max_health += 2
                     print("added 2 to health")
                 elif choice.lower() == "attack":
                     self.attack += 1
