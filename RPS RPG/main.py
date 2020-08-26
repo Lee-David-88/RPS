@@ -43,54 +43,60 @@ def allocate_stats(character):
             return
 
 
-def combat(player, foe):
-    playing = True
+# def combat(player, foe):
+    # playing = True
 
-    choice = ["Rock", "Paper", "Scissor"]
+    # choice = ["Rock", "Paper", "Scissor"]
 
-    while playing:
-        npc_choice = choice[random.randint(0, 2)]
-
-        if player["Hp"] == 0:
-            print("You Lose!")
-            playing = False
-        elif foe["Hp"] == 0:
-            print("You Win!")
-            playing = False
-        else:
-            player_choice = str(input("Rock, Paper, Scissor? ")).capitalize().strip()
-
-            if player_choice == npc_choice:
-                print("Tie")
-            elif player_choice == "Rock":
-                if npc_choice == "Paper":
-                    player["Hp"] -= foe["Attack"]
-                    print("You took " + str(foe["Attack"]) + " damage! Player Hp: " + str(player["Hp"]))
-                elif npc_choice == "Scissor":
-                    foe["Hp"] -= player["Attack"]
-                    print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
-            elif player_choice == "Paper":
-                if npc_choice == "Scissor":
-                    player["Hp"] -= foe["Attack"]
-                    print("You took " + str(foe["Attack"]) + " damage! Player Hp: " + str(player["Hp"]))
-                elif npc_choice == "Rock":
-                    foe["Hp"] -= player["Attack"]
-                    print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
-            elif player_choice == "Scissor":
-                if npc_choice == "Rock":
-                    player["Hp"] -= foe["Attack"]
-                    print("You took " + str(foe["Attack"]) + " damage! Player Hp: " + str(player["Hp"]))
-                elif npc_choice == "Paper":
-                    foe["Hp"] -= player["Attack"]
-                    print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
-
+    # while playing:
+        # npc_choice = choice[random.randint(0, 2)]
+        #
+        # if player["Hp"] == 0:
+        #     print("You Lose!")
+        #     playing = False
+        # elif foe["Hp"] == 0:
+        #     print("You Win!")
+        #     playing = False
+        # else:
+        #     player_choice = str(input("Rock, Paper, Scissor? ")).capitalize().strip()
+        #
+        #     if player_choice == npc_choice:
+        #         print("Tie")
+        #     elif player_choice == "Rock":
+        #         if npc_choice == "Paper":
+        #             player["Hp"] -= foe["Attack"]
+        #             print("You took " + str(foe["Attack"]) + " damage! Player Hp: " + str(player["Hp"]))
+        #         elif npc_choice == "Scissor":
+        #             foe["Hp"] -= player["Attack"]
+        #             print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
+        #     elif player_choice == "Paper":
+        #         if npc_choice == "Scissor":
+        #             player["Hp"] -= foe["Attack"]
+        #             print("You took " + str(foe["Attack"]) + " damage! Player Hp: " + str(player["Hp"]))
+        #         elif npc_choice == "Rock":
+        #             foe["Hp"] -= player["Attack"]
+        #             print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
+        #     elif player_choice == "Scissor":
+        #         if npc_choice == "Rock":
+        #             player["Hp"] -= foe["Attack"]
+        #             print("You took " + str(foe["Attack"]) + " damage! Player Hp: " + str(player["Hp"]))
+        #         elif npc_choice == "Paper":
+        #             foe["Hp"] -= player["Attack"]
+        #             print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
+def determine_winner(player1_choice, player2_choice):
+    choices = ["rock", "paper", "scissors"]
+    if []
+def combat(player, other_player):
+    player.start_round()
+    other_player.start_round()
+    player.end_round(other_player)
 
 def main():
     input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
     skills = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal"]
     npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills)
     player = Player(num_skills=6, num_points=3, skill_list=skills)
-
+    combat(player, npc)
     # player = character_stats()
     # allocate_stats(player)
     # foe = {"Hp": 10, "Attack": 2}
