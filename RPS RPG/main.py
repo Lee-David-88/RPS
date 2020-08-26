@@ -88,7 +88,7 @@ def combat(player, foe):
 
 def main():
     input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
-    skills = ["Skill1", "Skill2", "Skill3", "Skill4", "Skill5", "Skill6", "Skill7"]
+    skills = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal"]
     npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills)
     player = Player(num_skills=6, num_points=3, skill_list=skills)
 

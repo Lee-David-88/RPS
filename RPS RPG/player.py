@@ -8,20 +8,28 @@ class Player:
 
     health = 0
     attack = 0
+    skillToFuncMap = {}
 
-    def __init__(self, num_skills=0, num_points=0, npc=False, skill_list=[]):
-        self.skillToFuncMap = {skill_list[0]: lambda: self.skill1(),
-                               skill_list[1]: lambda: self.skill2(),
-                               skill_list[2]: lambda: self.skill3(),
-                               skill_list[3]: lambda: self.skill4(),
-                               skill_list[4]: lambda: self.skill5(),
-                               skill_list[5]: lambda: self.skill6()}
+    def __init__(self, num_skills=0, num_points=0, npc=False, skill_list=None):
+        if skill_list is None:
+            skill_list = []
+        self.map_functions(skill_list)
 
-        self.skillToFuncMap[skill_list[1]]()
         self.health = 12
         self.attack = 2
         self.allocate_starting_points(num_points, npc)
         self.pick_skills(num_skills, npc)
+
+    # assigns skills to functions regardless of order skills are in
+    def map_functions(self, skill_list):
+        func_list = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        for func in func_list:
+            for skill in skill_list:
+                if func.startswith(skill):
+                    self.skillToFuncMap[skill] = self.lambda_generator(func)
+
+    def lambda_generator(self, func):
+        return lambda: getattr(self, func)()
 
     def allocate_starting_points(self, num_points, npc):
         if npc:
@@ -49,3 +57,24 @@ class Player:
     def pick_skills(self, num_skills, npc):
         if npc:
             pass
+
+    def regen_logic(self):
+        print("regen")
+
+    def leech_logic(self):
+        print("leech")
+
+    def thorns_logic(self):
+        print("thorns")
+
+    def dodge_logic(self):
+        print("dodge")
+
+    def block_logic(self):
+        print("block")
+
+    def risk_logic(self):
+        print("risk")
+
+    def heal_logic(self):
+        print("heal")
