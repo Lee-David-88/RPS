@@ -1,0 +1,12 @@
+# idea
+
+!.idea/
+.idea/*
+!.idea/inspectionProfiles/
+!.idea/codeStyles/
+.idea/codeStyles/*
+!.idea/codeStyles/Project.xml
+!.idea/fileTemplates/
+*.iml
+*.ipr
+*.iws
