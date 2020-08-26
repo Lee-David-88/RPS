@@ -15,13 +15,39 @@ class Player:
                                skill_list[2]: lambda: self.skill3(),
                                skill_list[3]: lambda: self.skill4(),
                                skill_list[4]: lambda: self.skill5(),
-                               skill_list[5]: lambda: self.skill6()}
+                               skill_list[5]: lambda: self.skill6(),
+                               skill_list[6]: lambda: self.skill7()}
 
         self.skillToFuncMap[skill_list[1]]()
-        self.health = 12
-        self.attack = 2
+        self.health = 12.0
+        self.attack = 2.0
         self.allocate_starting_points(num_points, npc)
         self.pick_skills(num_skills, npc)
+
+    def skill1(self, result):
+        if result == "Win" or "Tie":
+            self.health += 1
+        elif result == "Lose":
+            self.health -= 1
+
+    def skill2(self, result):
+        if result == "Win":
+            self.health += self.attack / 2
+        elif result == "Lose":
+            self.attack -= 0.5
+
+    def skill3(self, result):
+        if result == "Lose":
+            self.attack += 0
+
+    def skill4(self, result):
+        chance = random.randint(1, 100)
+        if result == "Win":
+            if chance <= 20:
+                self.attack = 0
+        elif result == "Lose":
+            if chance <= 30:
+                self.health -= 0
 
     def allocate_starting_points(self, num_points, npc):
         if npc:
