@@ -9,14 +9,18 @@ def combat(player, other_player):
 
 def main():
     input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
-    skills = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal"]
+    skills = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal", "insurance"]
     skill_descriptions = {"regen": "On a win or tie, you gain 1 health, but you lose your max hp decreases by 1.",
                           "leech": "When u win u gain 50% of atk in hp, lose 0.5 atk on lose.",
                           "thorns": "Reflect 50% of damage taken but take 25% more damage",
-                          "dodge": "Dodge atk 30% of the times but don't do damage 20% of the times"
-                          }
-    npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills)
-    player = Player(num_skills=6, num_points=3, skill_list=skills)
+                          "dodge": "Dodge atk 30% of the times but don't do damage 20% of the times",
+                          "block": "When you win block the opponent's next attack next turn, but halfs your damage this\
+                                    turn",
+                          "risk": "If you win,  +2 to your attack this round, if you lose, -2 to your hp",
+                          "heal": "If you win/tie, +1 to hp, but -1 to attack",
+                          "insurance": "Take 50% less damage, but adds 1 to enemy atk next round"}
+    npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions)
+    player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions)
     combat(player, npc)
     # player = character_stats()
     # allocate_stats(player)
