@@ -1,4 +1,6 @@
 import random
+import player
+
 
 class Player:
     rockSkills = []
@@ -23,48 +25,18 @@ class Player:
         self.current_move = None
         self.result = None
 
-    def start_round(self):
-        self.current_health = self.max_health
-        self.current_attack = self.max_attack
-        self.current_move = self.get_move()
-
-    def round_result(self, other_player_choice: str) -> str:
-        if self.current_move == other_player_choice:
-            return "tie"
-        elif self.current_move == "rock":
-            return "win" if other_player_choice == "scissors" else "lose"
-        elif self.current_move == "paper":
-            return "win" if other_player_choice == "rock" else "lose"
-        else:
-            return "win" if other_player_choice == "paper" else "lose"
-
-    def end_round(self, other_player):
-        self.result = self.round_result(other_player.current_move)
-        if self.result == "win":
-            # self won, other_player lost
-            other_player.result = "win"
-            pass
-        elif self.result == "lose":
-            # self lost, other player won
-            other_player.result = "win"
-            pass
-        else:
-            # tie
-            other_player.result = "tie"
-            pass
-
     # assigns skills to functions regardless of order skills are in
-    def map_functions(self, skill_list):
+    def map_functions(self, skill_list: list) -> None:
         func_list = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
         for func in func_list:
             for skill in skill_list:
                 if func.startswith(skill):
                     self.skillToFuncMap[skill] = self.lambda_generator(func)
 
-    def lambda_generator(self, func):
+    def lambda_generator(self, func: str):
         return lambda other_player: getattr(self, func)(other_player)
 
-    def allocate_starting_points(self, num_points):
+    def allocate_starting_points(self, num_points: int) -> None:
         if self.npc:
             for i in range(num_points):
                 if random.randint(0, 1) == 0:
@@ -87,11 +59,44 @@ class Player:
                     num_points += 1
                 num_points -= 1
 
-    def pick_skills(self, num_skills):
-        if self.npc:
+    def pick_skills(self, num_skills: int, skill_list: list) -> None:
+        while num_skills > 0:
             pass
 
-    def get_move(self):
+    def print_skills(self, skill_list: list, skill_descriptions: dict):
+        pass
+
+    def start_round(self) -> None:
+        self.current_health = self.max_health
+        self.current_attack = self.max_attack
+        self.current_move = self.get_move()
+
+    def round_result(self, other_player_choice: str) -> str:
+        if self.current_move == other_player_choice:
+            return "tie"
+        elif self.current_move == "rock":
+            return "win" if other_player_choice == "scissors" else "lose"
+        elif self.current_move == "paper":
+            return "win" if other_player_choice == "rock" else "lose"
+        else:
+            return "win" if other_player_choice == "paper" else "lose"
+
+    def end_round(self, other_player: player.Player):
+        self.result = self.round_result(other_player.current_move)
+        if self.result == "win":
+            # self won, other_player lost
+            other_player.result = "win"
+            pass
+        elif self.result == "lose":
+            # self lost, other player won
+            other_player.result = "win"
+            pass
+        else:
+            # tie
+            other_player.result = "tie"
+            pass
+
+    def get_move(self) -> str:
         choices = ["rock", "paper", "scissors"]
         if self.npc:
             return choices[random.randint(0, 2)]
@@ -101,23 +106,23 @@ class Player:
                 return choice.lower()
             print("invalid choice")
 
-    def regen_logic(self, other_player):
+    def regen_logic(self, other_player: player.Player):
         print("regen")
 
-    def leech_logic(self, other_player):
+    def leech_logic(self, other_player: player.Player):
         print("leech")
 
-    def thorns_logic(self, other_player):
+    def thorns_logic(self, other_player: player.Player):
         print("thorns")
 
-    def dodge_logic(self, other_player):
+    def dodge_logic(self, other_player: player.Player):
         print("dodge")
 
-    def block_logic(self, other_player):
+    def block_logic(self, other_player: player.Player):
         print("block")
 
-    def risk_logic(self, other_player):
+    def risk_logic(self, other_player: player.Player):
         print("risk")
 
-    def heal_logic(self, other_player):
+    def heal_logic(self, other_player: player.Player):
         print("heal")
