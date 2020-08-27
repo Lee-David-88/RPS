@@ -107,22 +107,54 @@ class Player:
             print("invalid choice")
 
     def regen_logic(self, other_player: player.Player):
-        print("regen")
+        if self.result == "win":
+            self.current_health += 2
+            other_player.current_health -= self.current_attack
+        elif self.result == "tie":
+            self.current_health += 1
+        else:
+            self.max_health -= 1
+            self.current_health -= other_player.current_attack
 
     def leech_logic(self, other_player: player.Player):
-        print("leech")
+        if self.result == "win":
+            self.current_health += self.current_attack / 2
+        elif self.result == "lose":
+            self.current_attack -= 0.5
+            self.current_health -= other_player.current_attack
 
     def thorns_logic(self, other_player: player.Player):
-        print("thorns")
+        if self.result == "lose":
+            other_player.current_health -= other_player.current_attack / 2
+            self.current_health -= other_player.current_attack * 0.25
 
     def dodge_logic(self, other_player: player.Player):
-        print("dodge")
+        chance = random.randint(1, 100)
+        if self.result == "win":
+            if chance <= 20:
+                other_player.current_health += 0
+            else:
+                other_player.current_health -= self.current_attack
+        elif self.result == "lose":
+            if chance <= 30:
+                self.current_health += 0
+            else:
+                self.current_health -= other_player.current_attack
 
     def block_logic(self, other_player: player.Player):
         print("block")
 
     def risk_logic(self, other_player: player.Player):
-        print("risk")
+        if self.result == "win":
+            other_player.current_health -= self.current_attack + 2
+        elif self.result == "lose":
+            self.current_health -= other_player.current_attack + 2
 
     def heal_logic(self, other_player: player.Player):
-        print("heal")
+        if self.result == "win":
+            self.current_health += 2
+            other_player.current_health -= self.current_attack
+        elif self.result == "tie":
+            self.current_health += 1
+        else:
+            self.current_health -= other_player.current_attack + 1
