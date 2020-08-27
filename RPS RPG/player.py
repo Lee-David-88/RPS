@@ -5,6 +5,7 @@ class Player:
     rockSkills = []
     paperSkills = []
     scissorsSkills = []
+    chosen_skills = []
 
     max_health = 0.0
     current_health = 0.0
@@ -28,6 +29,7 @@ class Player:
         self.max_attack = 2.0
         self.allocate_starting_points(num_points)
         self.pick_skills(num_skills, skill_descriptions)
+        self.shuffle_skill()
         self.current_move = None
         self.result = None
 
@@ -66,7 +68,6 @@ class Player:
                 num_points -= 1
 
     def pick_skills(self, num_skills: int, skill_descriptions: dict) -> None:
-        chosen_skills = []
         remaining_skills = self.skill_list.copy()
         if self.npc:
             random.shuffle(remaining_skills)
@@ -79,17 +80,19 @@ class Player:
             while True:
                 choice = input("Pick a skill: ").lower()
                 if choice in remaining_skills:
-                    chosen_skills.append(remaining_skills.pop(remaining_skills.index(choice)))
+                    self.chosen_skills.append(remaining_skills.pop(remaining_skills.index(choice)))
                     num_skills -= 1
                     break
                 elif choice in self.skill_list:
                     print("You already picked this")
                 else:
                     print("Invalid choice")
-        random.shuffle(chosen_skills)
-        self.rockSkills = chosen_skills[0:2]
-        self.paperSkills = chosen_skills[2:4]
-        self.scissorsSkills = chosen_skills[4:6]
+
+    def shuffle_skill(self) -> None:
+        random.shuffle(self.chosen_skills)
+        self.rockSkills = self.chosen_skills[0:2]
+        self.paperSkills = self.chosen_skills[2:4]
+        self.scissorsSkills = self.chosen_skills[4:6]
 
     def print_skills(self, remaining_skills: list, skill_descriptions: dict) -> None:
         print("skills to pick from")
@@ -128,6 +131,7 @@ class Player:
             print("tie")
             other_player.result = "tie"
             pass
+        # print(self.current_health, other_player.current_health)
 
     def get_move(self) -> str:
         choices = ["rock", "paper", "scissors"]
