@@ -19,7 +19,7 @@ def main():
                           "heal": "If you win/tie, +1 to hp, but -1 to attack",
                           "insurance": "Take 50% less damage, but adds 1 to enemy atk next round"}
     npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions)
-    player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions)
+    player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions, npc=True)
 
     # while player.current_health > 0 and npc.current_health > 0:
     combat(player, npc)

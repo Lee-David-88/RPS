@@ -71,6 +71,7 @@ class Player:
         remaining_skills = self.skill_list.copy()
         if self.npc:
             random.shuffle(remaining_skills)
+            self.chosen_skills = remaining_skills[0:6]
             self.rock_skills = remaining_skills[0:2]
             self.paper_skills = remaining_skills[2:4]
             self.scissor_skills = remaining_skills[4:6]
@@ -131,17 +132,18 @@ class Player:
             print("tie")
             other_player.result = "tie"
             pass
-        self.skillToFuncMap[self.result[1]]()
+        self.skillToFuncMap[self.current_move[1]](other_player)
         # print(self.current_health, other_player.current_health)
 
     def get_move(self) -> list:
-        choice: list = []
+        choice: list = [None, None]
         choices: list = ["rock", "paper", "scissors"]
-        choice_map: dict = {"rock": lambda: self.rock_skills,
-                            "paper": lambda: self.paper_skills,
-                            "scissors": lambda: self.scissor_skills}
+        choice_map: dict = {"rock": self.rock_skills,
+                            "paper": self.paper_skills,
+                            "scissors": self.scissor_skills}
         if self.npc:
             choice[0] = choices[random.randint(0, 2)]
+
             choice[1] = choice_map[choice[0]][random.randint(0, 1)]
             return choice
         while True:
