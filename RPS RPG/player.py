@@ -2,17 +2,17 @@ import random
 
 
 class Player:
-    rockSkills = []
-    paperSkills = []
-    scissorsSkills = []
-    chosen_skills = []
+    rock_skills: list = []
+    paper_skills: list = []
+    scissor_skills: list = []
+    chosen_skills: list = []
 
-    max_health = 0.0
-    current_health = 0.0
-    max_attack = 0.0
-    current_attack = 0.0
-    skillToFuncMap = {}
-    blocked = False
+    max_health: float = 0.0
+    current_health: float = 0.0
+    max_attack: float = 0.0
+    current_attack: float = 0.0
+    skillToFuncMap: dict = {}
+    blocked: bool = False
 
     def __init__(self, num_skills: int = 0,
                  num_points: int = 0,
@@ -22,20 +22,20 @@ class Player:
 
         if skill_list is None:
             skill_list = []
-        self.skill_list = skill_list
+        self.skill_list: list = skill_list
         self.map_functions()
-        self.npc = npc
-        self.max_health = 12.0
-        self.max_attack = 2.0
+        self.npc: bool = npc
+        self.max_health: float = 12.0
+        self.max_attack: float = 2.0
         self.allocate_starting_points(num_points)
         self.pick_skills(num_skills, skill_descriptions)
         self.shuffle_skill()
-        self.current_move = None
-        self.result = None
+        self.current_move: list = []
+        self.result: str = ""
 
     # assigns skills to functions regardless of order skills are in
     def map_functions(self) -> None:
-        func_list = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        func_list: list = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
         for func in func_list:
             for skill in self.skill_list:
                 if func.startswith(skill):
@@ -55,7 +55,7 @@ class Player:
             while num_points > 0:
                 print("\"hp\" to add 2 health or \"attack\" to add 1 attack")
                 print(f"current health: {self.max_health}, current attack: {self.max_attack}")
-                choice = input(">: ")
+                choice: str = input(">: ")
                 if choice.lower() == "hp":
                     self.max_health += 2
                     print("added 2 to health")
@@ -71,9 +71,9 @@ class Player:
         remaining_skills = self.skill_list.copy()
         if self.npc:
             random.shuffle(remaining_skills)
-            self.rockSkills = remaining_skills[0:2]
-            self.paperSkills = remaining_skills[2:4]
-            self.scissorsSkills = remaining_skills[4:6]
+            self.rock_skills = remaining_skills[0:2]
+            self.paper_skills = remaining_skills[2:4]
+            self.scissor_skills = remaining_skills[4:6]
             return
         while num_skills > 0:
             self.print_skills(remaining_skills, skill_descriptions)
@@ -90,9 +90,9 @@ class Player:
 
     def shuffle_skill(self) -> None:
         random.shuffle(self.chosen_skills)
-        self.rockSkills = self.chosen_skills[0:2]
-        self.paperSkills = self.chosen_skills[2:4]
-        self.scissorsSkills = self.chosen_skills[4:6]
+        self.rock_skills = self.chosen_skills[0:2]
+        self.paper_skills = self.chosen_skills[2:4]
+        self.scissor_skills = self.chosen_skills[4:6]
 
     def print_skills(self, remaining_skills: list, skill_descriptions: dict) -> None:
         print("skills to pick from")
@@ -104,17 +104,17 @@ class Player:
         self.current_attack = self.max_attack
         self.current_move = self.get_move()
 
-    def round_result(self, other_player_choice: str) -> str:
-        if self.current_move == other_player_choice:
+    def round_result(self, other_player_choice: list) -> str:
+        if self.current_move[0] == other_player_choice[0]:
             return "tie"
-        elif self.current_move == "rock":
-            return "win" if other_player_choice == "scissors" else "lose"
-        elif self.current_move == "paper":
-            return "win" if other_player_choice == "rock" else "lose"
+        elif self.current_move[0] == "rock":
+            return "win" if other_player_choice[0] == "scissors" else "lose"
+        elif self.current_move[0] == "paper":
+            return "win" if other_player_choice[0] == "rock" else "lose"
         else:
-            return "win" if other_player_choice == "paper" else "lose"
+            return "win" if other_player_choice[0] == "paper" else "lose"
 
-    def end_round(self, other_player: 'Player'):
+    def end_round(self, other_player: 'Player') -> None:
         self.result = self.round_result(other_player.current_move)
         if self.result == "win":
             # self won, other_player lost
@@ -131,19 +131,34 @@ class Player:
             print("tie")
             other_player.result = "tie"
             pass
+        self.skillToFuncMap[self.result[1]]()
         # print(self.current_health, other_player.current_health)
 
-    def get_move(self) -> str:
-        choices = ["rock", "paper", "scissors"]
+    def get_move(self) -> list:
+        choice: list = []
+        choices: list = ["rock", "paper", "scissors"]
+        choice_map: dict = {"rock": lambda: self.rock_skills,
+                            "paper": lambda: self.paper_skills,
+                            "scissors": lambda: self.scissor_skills}
         if self.npc:
-            return choices[random.randint(0, 2)]
+            choice[0] = choices[random.randint(0, 2)]
+            choice[1] = choice_map[choice[0]][random.randint(0, 1)]
+            return choice
         while True:
-            choice = input("Enter a move of \"rock\", \"paper\", or \"scissors\": ")
-            if choice.lower() in choices:
-                return choice.lower()
+            print(f"Available rock skills: {self.rock_skills[0]} and {self.rock_skills}")
+            print(f"Available paper skills: {self.paper_skills[0]} and {self.paper_skills}")
+            print(f"Available scissor skills: {self.scissor_skills[0]} and {self.scissor_skills}")
+            choice[0] = input("Enter a move of \"rock\", \"paper\", or \"scissors\": ").lower()
+            if choice[0] in choices:
+                while True:
+                    choice[1] = input(
+                        f"Which skill do you want to use? {choice_map[choice[0]][0]} or {choice_map[choice[1]][1]}").lower()
+                    if choice[1] in choice_map[choices[0]]:
+                        return choice
+                    print("Invalid choice")
             print("invalid choice")
 
-    def regen_logic(self, other_player: 'Player'):
+    def regen_logic(self, other_player: 'Player') -> None:
         if self.result == "win":
             self.current_health += 2
             other_player.current_health -= self.current_attack
@@ -153,20 +168,20 @@ class Player:
             self.max_health -= 1
             self.current_health -= other_player.current_attack
 
-    def leech_logic(self, other_player: 'Player'):
+    def leech_logic(self, other_player: 'Player') -> None:
         if self.result == "win":
             self.current_health += self.current_attack / 2
         elif self.result == "lose":
             self.max_attack -= 0.5
             self.current_health -= other_player.current_attack
 
-    def thorns_logic(self, other_player: 'Player'):
+    def thorns_logic(self, other_player: 'Player') -> None:
         if self.result == "lose":
             other_player.current_health -= other_player.current_attack / 2
             self.current_health -= other_player.current_attack * 1.25
 
-    def dodge_logic(self, other_player: 'Player'):
-        chance = random.randint(1, 10)
+    def dodge_logic(self, other_player: 'Player') -> None:
+        chance: int = random.randint(1, 10)
         if self.result == "win":
             if chance > 2:
                 other_player.current_health -= self.current_attack
@@ -174,16 +189,16 @@ class Player:
             if chance <= 3:
                 self.current_health -= other_player.current_attack
 
-    def block_logic(self, other_player: 'Player'):
+    def block_logic(self, other_player: 'Player') -> None:
         print("block")
 
-    def risk_logic(self, other_player: 'Player'):
+    def risk_logic(self, other_player: 'Player') -> None:
         if self.result == "win":
             other_player.current_health -= self.current_attack + 2
         elif self.result == "lose":
             self.current_health -= other_player.current_attack + 2
 
-    def heal_logic(self, other_player: 'Player'):
+    def heal_logic(self, other_player: 'Player') -> None:
         if self.result == "win":
             self.current_health += 2
             other_player.current_health -= self.current_attack
@@ -192,5 +207,5 @@ class Player:
         else:
             self.current_health -= other_player.current_attack + 1
 
-    def insurance_logic(self, other_player: 'Player'):
+    def insurance_logic(self, other_player: 'Player') -> None:
         print("insurance")

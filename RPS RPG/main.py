@@ -14,8 +14,7 @@ def main():
                           "leech": "When u win u gain 50% of atk in hp, lose 0.5 atk on lose.",
                           "thorns": "Reflect 50% of damage taken but take 25% more damage",
                           "dodge": "Dodge atk 30% of the times but don't do damage 20% of the times",
-                          "block": "When you win block the opponent's next attack next turn, but halfs your damage this\
-                                    turn",
+                          "block": "When you win block the opponent's next attack next turn, but halves your damage this turn",
                           "risk": "If you win,  +2 to your attack this round, if you lose, -2 to your hp",
                           "heal": "If you win/tie, +1 to hp, but -1 to attack",
                           "insurance": "Take 50% less damage, but adds 1 to enemy atk next round"}
