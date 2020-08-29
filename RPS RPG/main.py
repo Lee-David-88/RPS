@@ -8,7 +8,10 @@ def combat(player, other_player):
 
 
 def main():
-    input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
+    npc_win_count = 0
+    player_win_count = 0
+    turns_in_rounds = 0
+    # input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
     skills = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal", "insurance"]
     skill_descriptions = {"regen": "On a win or tie, you gain 1 health, but you lose your max hp decreases by 1.",
                           "leech": "When u win u gain 50% of atk in hp, lose 0.5 atk on lose.",
@@ -18,11 +21,26 @@ def main():
                           "risk": "If you win,  +2 to your attack this round, if you lose, -2 to your hp",
                           "heal": "If you win/tie, +1 to hp, but -1 to attack",
                           "insurance": "Take 50% less damage, but adds 1 to enemy atk next round"}
-    npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions)
-    player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions, npc=True)
 
-    # while player.current_health > 0 and npc.current_health > 0:
-    combat(player, npc)
+    for i in range(100):
+        npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions)
+        player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions, npc=True)
+
+        count_turns = 0
+
+        while player.current_health > 0 and npc.current_health > 0:
+            combat(player, npc)
+            count_turns += 1
+
+        if player.current_health <= 0:
+            npc_win_count += 1
+        elif npc.current_health <= 0:
+            player_win_count += 1
+
+        turns_in_rounds += count_turns
+
+    average_turns = turns_in_rounds / 100
+    print(average_turns, player_win_count, npc_win_count)
 
     # player = character_stats()
     # allocate_stats(player)
