@@ -1,19 +1,24 @@
 from player import Player
 
 
-def combat(player, other_player):
+def combat(player: Player, other_player: Player) -> None:
+    print("round start:")
     player.start_round()
     other_player.start_round()
+
+    player.backup_attributes()
+    other_player.backup_attributes()
+
     player.end_round(other_player)
-
-
+    other_player.end_round(player)
+    print("round end\n---------------\n")
 def main():
-    npc_win_count = 0
-    player_win_count = 0
-    turns_in_rounds = 0
+    npc_win_count: int = 0
+    player_win_count: int = 0
+    turns_in_rounds: int = 0
     # input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
-    skills = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal", "insurance"]
-    skill_descriptions = {"regen": "On a win or tie, you gain 1 health, but you lose your max hp decreases by 1.",
+    skills: list = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal", "insurance"]
+    skill_descriptions: dict = {"regen": "On a win or tie, you gain 1 health, but you lose your max hp decreases by 1.",
                           "leech": "When u win u gain 50% of atk in hp, lose 0.5 atk on lose.",
                           "thorns": "Reflect 50% of damage taken but take 25% more damage",
                           "dodge": "Dodge atk 30% of the times but don't do damage 20% of the times",
@@ -22,9 +27,9 @@ def main():
                           "heal": "If you win/tie, +1 to hp, but -1 to attack",
                           "insurance": "Take 50% less damage, but adds 1 to enemy atk next round"}
 
-    for i in range(100):
-        npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions)
-        player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions, npc=True)
+    for _ in range(100):
+        player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions, npc=True, name="player")
+        npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions, name="npc")
 
         count_turns = 0
 
@@ -131,4 +136,3 @@ if __name__ == "__main__":
 #         elif npc_choice == "Paper":
 #             foe["Hp"] -= player["Attack"]
 #             print("Npc took " + str(player["Attack"]) + " damage! Npc Hp: " + str(foe["Hp"]))
-

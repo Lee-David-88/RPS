@@ -2,26 +2,37 @@ import random
 
 
 class Player:
-    rock_skills: list = []
-    paper_skills: list = []
-    scissor_skills: list = []
-    chosen_skills: list = []
-
-    max_health: float = 0.0
-    current_health: float = 1.0
-    max_attack: float = 0.0
-    current_attack: float = 0.0
-    skillToFuncMap: dict = {}
-    blocked: bool = False
-
     def __init__(self, num_skills: int = 0,
                  num_points: int = 0,
                  npc: bool = False,
                  skill_list: list = None,
-                 skill_descriptions: dict = None):
+                 skill_descriptions: dict = None,
+                 name: str = ""):
 
+        self.name = name
+        #list of the two skills currently assigned to rock, paper, or scissors
+        self.rock_skills: list = []
+        self.paper_skills: list = []
+        self.scissor_skills: list = []
+
+        #list of all skills that have been chosen
+        self.chosen_skills: list = []
+
+        #backup values used for calculations against other player
+        self.max_health: float = 0.0
+        self.current_health: float = 1.0
+        self.backup_health: float = 0.0
+
+        self.max_attack: float = 0.0
+        self.current_attack: float = 0.0
+        self.backup_attack: float = 0.0
+        self.blocked: bool = False
+
+        #map of skill names to the methods that deal with the logic of those skills
+        self.skillToFuncMap: dict = {}
         if skill_list is None:
             skill_list = []
+
         self.skill_list: list = skill_list
         self.map_functions()
         self.npc: bool = npc
@@ -48,7 +59,7 @@ class Player:
 
     def allocate_starting_points(self, num_points: int) -> None:
         if self.npc:
-            for i in range(num_points):
+            for _ in range(num_points):
                 if random.randint(0, 1) == 0:
                     self.max_health += 2
                 else:
@@ -117,24 +128,30 @@ class Player:
 
     def end_round(self, other_player: 'Player') -> None:
         self.result = self.round_result(other_player.current_move)
-        if self.result == "win":
-            # self won, other_player lost
-            print("win")
-            other_player.result = "win"
-            pass
-        elif self.result == "lose":
-            # self lost, other player won
-            print("lose")
-            other_player.result = "win"
-            pass
-        else:
-            # tie
-            print("tie")
-            other_player.result = "tie"
-            pass
+        # if self.result == "win":
+        #     # self won, other_player lost
+        #     print("win")
+        #     other_player.result = "win"
+        #     pass
+        # elif self.result == "lose":
+        #     # self lost, other player won
+        #     print("lose")
+        #     other_player.result = "win"
+        #     pass
+        # else:
+        #     # tie
+        #     print("tie")
+        #     other_player.result = "tie"
+        #     pass
         self.skillToFuncMap[self.current_move[1]](other_player)
+        print(f"{self.name}'s code")
         print(self.current_health, other_player.current_health)
         print(self.current_move[1])
+        print()
+
+    def backup_attributes(self):
+        self.backup_health = self.current_health
+        self.backup_attack = self.current_attack
 
     def get_move(self) -> list:
         choice: list = [None, None]
@@ -162,111 +179,66 @@ class Player:
             print("invalid choice")
 
     def regen_logic(self, other_player: 'Player') -> None:
-        if self.blocked:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack
-                self.current_health = min(self.current_health + 2, self.max_health)
-            elif self.result == "tie":
-                self.current_health = min(self.current_health + 1, self.max_health)
-            self.blocked = False
-        else:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack
-                self.current_health = min(self.current_health + 2, self.max_health)
-            elif self.result == "tie":
-                self.current_health = min(self.current_health + 1, self.max_health)
-            else:
-                self.max_health = max(self.max_health - 1, 1)
-                self.current_health -= other_player.current_attack
+        if self.result == "win":
+            other_player.current_health -= self.backup_attack
+            self.current_health = min(self.backup_health + 2, self.max_health)
+        elif self.result == "tie":
+            self.current_health = min(self.backup_health + 1, self.max_health)
+        elif not self.blocked:
+            self.max_health = max(self.max_health - 1, 1)
+            self.current_health -= other_player.backup_attack
+        self.blocked = False
 
     def leech_logic(self, other_player: 'Player') -> None:
-        if self.blocked:
             if self.result == "win":
-                self.current_health = min(self.current_health + self.current_attack / 2, self.max_health)
-                other_player.current_health -= self.current_attack
+                self.current_attack = min(self.backup_health + self.backup_attack / 2, self.max_health)
+                other_player.current_health -= self.backup_attack
+            elif self.result == "lose" and not self.blocked:
+                self.current_attack = max(self.max_attack - 0.5, 1)
+                self.current_health -= other_player.backup_attack
             self.blocked = False
-        else:
-            if self.result == "win":
-                self.current_health = min(self.current_health + self.current_attack / 2, self.max_health)
-                other_player.current_health -= self.current_attack
-            elif self.result == "lose":
-                self.max_attack = max(self.max_attack - 0.5, 1)
-                self.current_health -= other_player.current_attack
 
     def thorns_logic(self, other_player: 'Player') -> None:
-        if self.blocked:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack
-            self.blocked = False
-        else:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack
-            elif self.result == "lose":
-                other_player.current_health -= other_player.current_attack / 2
-                self.current_health -= other_player.current_attack * 1.25
+        if self.result == "win":
+            other_player.current_health -= self.backup_attack
+        elif self.result == "lose" and not self.blocked:
+            other_player.current_health -= other_player.backup_attack / 2
+            self.current_health -= other_player.backup_attack * 1.25
+        self.blocked = False
 
     def dodge_logic(self, other_player: 'Player') -> None:
         chance: int = random.randint(1, 10)
-        if self.blocked:
-            if self.result == "win":
-                if chance > 2:
-                    other_player.current_health -= self.current_attack
-            self.blocked = False
-        else:
-            if self.result == "win":
-                if chance > 2:
-                    other_player.current_health -= self.current_attack
-            elif self.result == "lose":
-                if chance > 3:
-                    self.current_health -= other_player.current_attack
+        if self.result == "win" and chance > 2:
+            other_player.current_health -= self.backup_attack
+        elif self.result == "lose" and not self.blocked and chance <= 3:
+            self.current_health -= other_player.backup_attack
 
     def block_logic(self, other_player: 'Player') -> None:
-        if self.blocked:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack / 2
-                self.blocked = True
-        else:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack / 2
-                self.blocked = True
-            elif self.result == "lose":
-                self.current_health -= other_player.current_attack
+        if self.result == "win":
+            other_player.current_health -= self.backup_attack / 2
+            self.blocked = True
+        elif self.result == "lose" and not self.blocked:
+            self.current_health -= other_player.backup_attack
 
     def risk_logic(self, other_player: 'Player') -> None:
-        if self.blocked:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack + 2
-            self.blocked = False
-        else:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack + 2
-            elif self.result == "lose":
-                self.current_health -= other_player.current_attack + 2
+        if self.result == "win":
+            other_player.current_health -= self.backup_attack + 2
+        elif self.result == "lose" and not self.blocked:
+            self.current_health -= other_player.backup_attack + 2
+        self.blocked = False
 
     def heal_logic(self, other_player: 'Player') -> None:
-        if self.blocked:
-            if self.result == "win":
-                self.current_health = min(self.current_health + 2, self.max_health)
-                other_player.current_health -= self.current_attack
-            elif self.result == "tie":
-                self.current_health = min(self.current_health + 1, self.max_health)
-            self.blocked = False
-        else:
-            if self.result == "win":
-                self.current_health = min(self.current_health + 2, self.max_health)
-                other_player.current_health -= self.current_attack
-            elif self.result == "tie":
-                self.current_health = min(self.current_health + 1, self.max_health)
-            else:
-                self.current_health -= other_player.current_attack + 1
+        if self.result == "win":
+            self.current_health = min(self.backup_health + 2, self.max_health)
+            other_player.current_health -= self.backup_attack
+        elif self.result == "tie":
+            self.current_health = min(self.backup_health + 1, self.max_health)
+        elif not self.blocked:
+            self.current_health -= other_player.backup_attack + 1
+        self.blocked = False
 
     def insurance_logic(self, other_player: 'Player') -> None:
-        if self.blocked:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack
-            self.blocked = False
-        else:
-            if self.result == "win":
-                other_player.current_health -= self.current_attack
-            elif self.result == "lose":
-                self.current_health -= other_player.current_health / 2
+        if self.result == "win":
+            other_player.current_health -= self.backup_attack
+        elif self.result == "lose" and not self.blocked:
+            self.current_health -= other_player.backup_health / 2
