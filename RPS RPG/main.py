@@ -1,17 +1,19 @@
 from player import Player
 
 
-def combat(player: Player, other_player: Player) -> None:
+def combat(player_one: Player, player_two: Player) -> None:
     print("round start:")
-    player.start_round()
-    other_player.start_round()
+    player_one.get_move()
+    player_two.get_move()
 
-    player.backup_attributes()
-    other_player.backup_attributes()
+    player_one.calculate_combat_modifiers(player_two)
+    player_two.calculate_combat_modifiers(player_one)
 
-    player.end_round(other_player)
-    other_player.end_round(player)
+    player_one.update_health(player_two)
+    player_two.update_health(player_one)
     print("round end\n---------------\n")
+
+
 def main():
     npc_win_count: int = 0
     player_win_count: int = 0
@@ -19,17 +21,19 @@ def main():
     # input("Welcome to Rock Paper Scissor RPG! (Press Enter to Start)")
     skills: list = ["risk", "regen", "thorns", "dodge", "leech", "block", "heal", "insurance"]
     skill_descriptions: dict = {"regen": "On a win or tie, you gain 1 health, but you lose your max hp decreases by 1.",
-                          "leech": "When u win u gain 50% of atk in hp, lose 0.5 atk on lose.",
-                          "thorns": "Reflect 50% of damage taken but take 25% more damage",
-                          "dodge": "Dodge atk 30% of the times but don't do damage 20% of the times",
-                          "block": "When you win block the opponent's next attack next turn, but halves your damage this turn",
-                          "risk": "If you win,  +2 to your attack this round, if you lose, -2 to your hp",
-                          "heal": "If you win/tie, +1 to hp, but -1 to attack",
-                          "insurance": "Take 50% less damage, but adds 1 to enemy atk next round"}
+                                "leech": "When u win u gain 50% of atk in hp, lose 0.5 atk on lose.",
+                                "thorns": "Reflect 50% of damage taken but take 25% more damage",
+                                "dodge": "Dodge atk 30% of the times but don't do damage 20% of the times",
+                                "block": "When you win block the opponent's next attack next turn, but halves your damage this turn",
+                                "risk": "If you win,  +2 to your attack this round, if you lose, -2 to your hp",
+                                "heal": "If you win/tie, +1 to hp, but -1 to attack",
+                                "insurance": "Take 50% less damage, but adds 1 to enemy atk next round"}
 
     for _ in range(100):
-        player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions, npc=True, name="player")
-        npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions, name="npc")
+        player = Player(num_skills=6, num_points=3, skill_list=skills, skill_descriptions=skill_descriptions, npc=True,
+                        name="player")
+        npc = Player(num_skills=6, num_points=3, npc=True, skill_list=skills, skill_descriptions=skill_descriptions,
+                     name="npc")
 
         count_turns = 0
 
